@@ -35,39 +35,39 @@ obj_numbers = 1:14;
 % Add "unidentifiable" category
 
 % Define the non-living categories 
-remove_cat = {"bubble","bead","artefact","badfocus","part"};
+remove_cat = {'\w*bubble\w*','\w*bead\w*','\w*artefact\w*','\w*badfocus\w*','\w*part\w*'};
 
-nonliv_cat = {"detritus","feces","fiber","plastic"};
+nonliv_cat = {'\w*detritus\w*','\w*feces\w*','\w*fiber\w*','\w*plastic\w*'};
  
-ciliates = {"Ciliophora"};
+ciliates = {'\w*Ciliophora\w*'};
    
-chloros = {"Chlorophytes","Prasinophyceae","tempPrasinophyceae"};
+chloros = {'\w*Chlorophytes\w*','\w*Prasinophyceae\w*','\w*tempPrasinophyceae\w*'};
 
-cryptos = {"tempCryptophyceae"};
+cryptos = {'\w*tempCryptophyceae\w*'};
 
 % Define the diatoms
-diatoms = {"pennate","centric","chain","Corethron",...
-    "Pseudo-nitzschia","Bacteriastrum","Planktoniella",...
-    "Thalassiosira","Coscinodiscus","Membraneis",...
-    "Chaetoceros","Guinardia","Rhizosolenia","Navicula",...
-    "Ditylum","Bacteriastrum","Cylindrotheca","Eucampia"};
+diatoms = {'\w*pennate\w*','\w*centric\w*','\w*chain\w*','\w*Corethron\w*',...
+    '\w*Pseudo-nitzschia\w*','\w*Bacteriastrum\w*','\w*Planktoniella\w*',...
+    '\w*Thalassiosira\w*','\w*Coscinodiscus\w*','\w*Membraneis\w*',...
+    '\w*Chaetoceros\w*','\w*Guinardia\w*','\w*Rhizosolenia\w*','\w*Navicula\w*',...
+    '\w*Ditylum\w*','\w*Bacteriastrum\w*','\w*Cylindrotheca\w*','\w*Eucampia\w*'};
 
 % Define the dinoflagellates
-dinoflagellates = {"Dinophyceae","Pyrocystis","Ceratium",...
-    "Dinophysis","Oxytoxum","Prorocentrum","Warnowia",...
+dinoflagellates = {'\w*Dinophyceae\w*','\w*Pyrocystis\w*','\w*Ceratium\w*',...
+    '\w*Dinophysis\w*','\w*Oxytoxum\w*','\w*Prorocentrum\w*','\w*Warnowia\w*',...
     '\w*Nematopsides\w*'};
 
 dictyos = {'\w*Dictyo\w*'}; % for example you could add : "t002" here
 
 euglenos = {'\w*Euglen\w*'};
 
-prymnesio = {"Prymnesiophyceae","Phaeocystis","Prymnesiaceae X"};
+prymnesio = {'\w*Prymnesiophyceae\w*','\w*Phaeocystis\w*','\w*Prymnesiaceae X\w*'};
 
-others = {"other","othertocheck"};%,'\w*t0\w*'};
+others = {'\w*other\w*','\w*othertocheck\w*'};%,'\w*t0\w*'};
 
-mult = "multiple";
+mult = {'\w*multiple\w*'};
 
-clum = "clumps";
+clum = {'\w*clumps\w*'};
 
 % Not used currently:
 %     "Tintinnida","nauplii","Mollusca",...
@@ -81,7 +81,7 @@ clum = "clumps";
 obj_val = zeros(length(objects.status),1);
 n = 1;
 for ii = 1:length(objects.status)
-    if strcmp(objects.status(ii,:), "validated") == 1
+    if strcmp(objects.status(ii,:), "validated") == 1 || strcmp(objects.status(ii,:),'"validated"') == 1
         obj_val(n) = ii;
         n = n+1;
     end

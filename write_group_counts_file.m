@@ -3,7 +3,7 @@ function [C,IC] = write_group_counts_file(file_loc,matfilename,objects)
 obj_val = [];
 n = 1;
 for ii = 1:length(objects.status)
-    if strcmp(objects.status(ii,:), "validated") == 1
+    if strcmp(objects.status(ii,:), "validated") == 1 || strcmp(objects.status(ii,:),'"validated"') == 1
         obj_val(n) = ii;
         n = n+1;
     end

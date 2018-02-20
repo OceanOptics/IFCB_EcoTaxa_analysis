@@ -92,8 +92,6 @@ function bins_size = run_extract_tsv_size_types(tsv,dilution,write_files,sizebin
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%addpath '/Users/lee/Desktop/Leeka/tara/Tara_oceans_polar_circle/IFCB_analysis/ECOTAXA/codes/'
-
 if isdir(tsv) == 0
     file_loc = [];
     files = tsv;
@@ -147,7 +145,11 @@ for ifile = 1:loopnum  %For all samples in the "export" folder from EcoTaxa use:
     ids_val = false(length(objects.status),1);
     ids_tot = length(objects.status);
     for ii = 1:ids_tot
-        ids_val(ii) = strcmp(objects.status(ii,:), "validated");
+        if strcmp(objects.status(ii,:), "validated") == 1 || strcmp(objects.status(ii,:),'"validated"') == 1
+            ids_val(ii) = 1;
+        else 
+            ids_val(ii) = 0;
+        end
     end
 
     % Print the percent validated to the screen 
@@ -189,7 +191,7 @@ for ifile = 1:loopnum  %For all samples in the "export" folder from EcoTaxa use:
     bins = group_by_type(objects,bin_edges,bins);
     
     % Add the original .tsv filename and bins edges to the structure of binned data
-    [bins.filename] = deal(filename);
+   [bins.filename] = deal(filename);
     for ii = 1:length(bin_edges)-1
         bins(ii).bin_edges = [bin_edges(ii),bin_edges(ii+1)];
     end
