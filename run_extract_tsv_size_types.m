@@ -50,24 +50,24 @@ function bins_size = run_extract_tsv_size_types(tsv,dilution,write_files,sizebin
 %
 %  Created folders:
 %
-%   In the parent folder to the tsv file(s) location, three folders are
+%   In the same path as the .tsv file(s), two folders are created:
+%
+%    reduced_mat_files/
+%    group_counts_text_files/ (not created if write_files = 0 during
+%     function call)
+%
+%   In the parent folder to the tsv file(s) location, one folders is
 %   created to store output files: 
 %
-%   reduced_mat_files/
-%   group_counts_text_files/
-%   analysis_mat_files/ 
-%
-%       If write_files = 0 during function call, the 
-%       group_counts_text_files/ and analysis_mat_files/ folders will not
-%       be created (reduced_mat_files/ directory is always created).
+%    analysis_mat_files/ 
 %
 %   Library of required functions:
 %   
-%   get_var_names.m
-%   read_tsv_file.m
-%   write_group_counts_file.m
-%   bins_by_size.m
-%   group_by_type.m
+%    get_var_names.m
+%    read_tsv_file.m
+%    write_group_counts_file.m
+%    bins_by_size.m
+%    group_by_type.m
 %
 % EXAMPLE FUNCTION CALLS
 % 
