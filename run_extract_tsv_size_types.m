@@ -75,7 +75,7 @@ function bins_size = run_extract_tsv_size_types(tsv,dilution,write_files,sizebin
 %   to have text and results files written (1), a structure of bin size
 %   information provided, and volume-based diameter:
 %
-%       >> tsv = '/Users/lee/Desktop/Leeka/tara/Tara_oceans_polar_circle/IFCB_analysis/ECOTAXA/export_123_20171227_1705_168/';
+%       >> tsv = '/your_local_path/your_folder_of_exported_tsv_files/';
 %       >> sizebins.numbins = 10;
 %       >> sizebins.Dmin = 2;
 %       >> sizebins.Dmax = 200;
