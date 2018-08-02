@@ -12,7 +12,7 @@ function bins = group_by_type(objects,bin_edges,bins)
 % All categories, and their numbers:
 rem_cat = [];   %1  to be removed: bubble, bead, artefact, badfocus, part 
 
-non_liv = [];   %2  detritus, feces, plastic, fiber
+non_liv = [];   %2  detritus, feces, plastic, fiber. Also unicellular are cells < 7um in ESD
 cili = [];      %3  Ciliates
 chlor = [];     %4  Chlorophytes (includes Prasinophytes)
 crypt = [];     %5  Cryptophytes
@@ -35,33 +35,40 @@ obj_numbers = 1:14;
 % Add "unidentifiable" category
 
 % Define the non-living categories 
-remove_cat = {'\w*bubble\w*','\w*bead\w*','\w*artefact\w*','\w*badfocus\w*','\w*part\w*'};
+remove_cat = {'\w*bubble\w*','\w*bead\w*','\w*artefact\w*','\w*badfocus\w*','\w*part\w*','\w*unicellular\w*'};
 
-nonliv_cat = {'\w*detritus\w*','\w*feces\w*','\w*fiber\w*','\w*plastic\w*'};
+nonliv_cat = {'\w*detritus\w*','\w*empty\w*','\w*feces\w*','\w*fiber\w*','\w*plastic\w*'};
  
-ciliates = {'\w*Ciliophora\w*'};
+ciliates = {'\w*Ciliophora\w*','\w*Tintinnida\w*'};
    
-chloros = {'\w*Chlorophytes\w*','\w*Prasinophyceae\w*','\w*tempPrasinophyceae\w*'};
+chloros = {'\w*Chlorophy\w*','\w*Prasinophyceae\w*','\w*tempPrasinophyceae\w*',...
+    '\w*Pterosperma\w*','\w*tempflagellates\w*'};
 
-cryptos = {'\w*tempCryptophyceae\w*'};
+cryptos = {'\w*tempCryptophyceae\w*','\w*Cryptophyta\w*','\w*t008\w*'};
 
 % Define the diatoms
 diatoms = {'\w*pennate\w*','\w*centric\w*','\w*chain\w*','\w*Corethron\w*',...
     '\w*Pseudo-nitzschia\w*','\w*Bacteriastrum\w*','\w*Planktoniella\w*',...
-    '\w*Thalassiosira\w*','\w*Coscinodiscus\w*','\w*Membraneis\w*',...
-    '\w*Chaetoceros\w*','\w*Guinardia\w*','\w*Rhizosolenia\w*','\w*Navicula\w*',...
-    '\w*Ditylum\w*','\w*Bacteriastrum\w*','\w*Cylindrotheca\w*','\w*Eucampia\w*'};
+    '\w*Thalassio\w*','\w*Coscinodiscus\w*','\w*Membraneis\w*',...
+    '\w*Chaetoceros\w*','\w*Guinardia\w*','\w*Rhizosolen\w*','\w*Navicula\w*',...
+    '\w*Ditylum\w*','\w*Bacteriastrum\w*','\w*Cylindrotheca\w*','\w*Eucampia\w*',...
+    '\w*Nanoneis\w*','\w*Nitzschia\w*','\w*Hemiaulales\w*','\w*Bacillariophy\w*',...
+    '\w*Hemiaulus\w*'};
 
 % Define the dinoflagellates
 dinoflagellates = {'\w*Dinophyceae\w*','\w*Pyrocystis\w*','\w*Ceratium\w*',...
     '\w*Dinophysis\w*','\w*Oxytoxum\w*','\w*Prorocentrum\w*','\w*Warnowia\w*',...
-    '\w*Nematopsides\w*'};
+    '\w*Nematopsides\w*','\w*Torodinium\w*','\w*Cochlodinium\w*','\w*Karenia\w*',...
+    '\w*Prorocent\w*','\w*Gyrodinium\w*','\w*Oxyphysaceae\w*','\w*Heterocapsa\w*',...
+    '\w*t011\w*'};
 
 dictyos = {'\w*Dictyo\w*'}; % for example you could add : "t002" here
 
 euglenos = {'\w*Euglen\w*'};
 
-prymnesio = {'\w*Prymnesiophyceae\w*','\w*Phaeocystis\w*','\w*Prymnesiaceae X\w*'};
+prymnesio = {'\w*Prymnesiophyceae\w*','\w*Phaeocystis\w*','\w*Prymnesiaceae X\w*',...
+    '\w*Rhabdosphaeraceae\w*','\w*Syracosphaer\w*','\w*Coccolith\w*',...
+    '\w*t002\w*','\w*t003\w*','\w*t005\w*','\w*t007\w*','\w*t010\w*','\w*t012\w*'};
 
 others = {'\w*other\w*','\w*othertocheck\w*'};%,'\w*t0\w*'};
 

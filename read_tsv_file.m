@@ -3,14 +3,9 @@ function [matfilename] = read_tsv_file(tsvfile)
 % Read the data exported from EcoTaxa (.tsv files) and remove the unecessary
 % variables to make a more managable .mat file
 % A. Chase March 2017
-if isstruct(tsvfile) == 1
-    filename = tsvfile.name;
-    filefold = tsvfile.folder;
-else
-    filename = tsvfile;
-    filefold = pwd;
-end
- 
+filename = tsvfile.name;
+filefold = tsvfile.folder;
+
 disp('*** Reducing .tsv file ***')
 
 allvar = tdfread([filefold,'/',filename]);

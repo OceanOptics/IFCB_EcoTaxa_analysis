@@ -8,6 +8,8 @@ names = fieldnames(keepvar);
 
 obj_status_ind = regexp(names,'\w*object_annotation_status\w*');
 obj_cat_ind = regexp(names,'\w*object_annotation_category\w*');
+obj_cat_parent_ind = regexp(names,'\w*object_annotation_parent_category\w*');
+obj_cat_hier_ind = regexp(names,'\w*object_annotation_hierarchy\w*');
 obj_area_pix_ind = regexp(names,'\w*object_summed_area\w*');
 obj_vol_pix_ind = regexp(names,'\w*object_summed_biovolume\w*');
 obj_ecc_ind = regexp(names,'\w*object_eccentricity\w*');
@@ -19,6 +21,12 @@ for ii = 1:numel(names)
         
     elseif isempty(obj_cat_ind{ii}) == 0
         obj_cat = getfield(keepvar,names{ii});
+        
+    elseif isempty(obj_cat_parent_ind{ii}) == 0
+        obj_cat_par = getfield(keepvar,names{ii});
+        
+    elseif isempty(obj_cat_hier_ind{ii}) == 0
+        obj_cat_hier = getfield(keepvar,names{ii});
         
     elseif isempty(obj_area_pix_ind{ii}) == 0
         obj_area_pix = getfield(keepvar,names{ii});
@@ -65,6 +73,8 @@ obj_vol = obj_vol_pix./(3.4^3); % in um^3
 
 objects.status = obj_status;
 objects.cat = obj_cat;
+objects.cat_par = obj_cat_par;
+objects.cat_hier = obj_cat_hier;
 objects.sumarea = obj_area;
 objects.sumvol = obj_vol;
 objects.ecc = obj_ecc;

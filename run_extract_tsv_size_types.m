@@ -7,14 +7,14 @@ function bins_size = run_extract_tsv_size_types(tsv,dilution,write_files,sizebin
 %   tsv - can either be the name of a single .tsv file from EcoTaxa, or the
 %         path of a folder containing multiple .tsv files
 %
-%   dilution - either a scaler (for one .tsv file) or a vector, set equal to the dilution factor in %; 0 if no dilution 
+%   dilution - either a scaler (for one .tsv file) or a vector, set equal to the dilution factor in %; 0 if no dilution
 %
-%   write_files - set to 0 to prevent saving a .txt file of group counts 
+%   write_files - set to 0 to prevent saving a .txt file of group counts
 %               for each sample and a .mat file of analysis results;
 %               default is for files to be written and stored in folders as
 %               listed below
 %
-%   sizebins - Can either be a structure defining: number of bins, and min & max 
+%   sizebins - Can either be a structure defining: number of bins, and min & max
 %               of size bins, which results in calculation of the individual bin
 %               widths based on a log scale; OR an array of bin edges
 %               (should be length of number of bins you want + 1).
@@ -57,12 +57,12 @@ function bins_size = run_extract_tsv_size_types(tsv,dilution,write_files,sizebin
 %     function call)
 %
 %   In the parent folder to the tsv file(s) location, one folders is
-%   created to store output files: 
+%   created to store output files:
 %
-%    analysis_mat_files/ 
+%    analysis_mat_files/
 %
 %   Library of required functions:
-%   
+%
 %    get_var_names.m
 %    read_tsv_file.m
 %    write_group_counts_file.m
@@ -70,7 +70,7 @@ function bins_size = run_extract_tsv_size_types(tsv,dilution,write_files,sizebin
 %    group_by_type.m
 %
 % EXAMPLE FUNCTION CALLS
-% 
+%
 %   EXAMPLE 1: for a folder containing multiple .tsv files, no dilution files (0), yes
 %   to have text and results files written (1), a structure of bin size
 %   information provided, and volume-based diameter:
@@ -84,7 +84,7 @@ function bins_size = run_extract_tsv_size_types(tsv,dilution,write_files,sizebin
 %   EXAMPLE 2: for a single .tsv file, no dilution (0), no files will be
 %   written (0), a vector of bin edges provided, and volume-based diameter:
 %
-%       >> tsv = 'AT34_INLINE_D20160603T062836_IFCB107.tsv'
+%       >> tsv = '/your_local_path/AT34_INLINE_D20160603T062836_IFCB107.tsv'
 %       >> bins_size = run_extract_tsv_size_types(tsv,0,0,[2 5 10 20 100 200],0)
 %
 %
@@ -93,12 +93,12 @@ function bins_size = run_extract_tsv_size_types(tsv,dilution,write_files,sizebin
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 if isdir(tsv) == 0
-    file_loc = [];
-    files = tsv;
+    getslash = strfind(tsv,'/');
+    file_loc = tsv(1:getslash(end));
 else
     file_loc = tsv;
-    files = dir([file_loc,'*.tsv']);
 end
+files = dir([file_loc,'*.tsv']);
 
 % Prepare folders to store output files
 if exist([file_loc,'reduced_mat_files'],'dir') ~= 7; mkdir([file_loc,'reduced_mat_files']);end
@@ -108,21 +108,12 @@ if write_files ~= 0
 end
 
 % Loop through all sample files
-if isdir(tsv) == 0
-    loopnum = 1;
-else
-    loopnum = length(files);
-end
+loopnum = length(files);
 
 for ifile = 1:loopnum  %For all samples in the "export" folder from EcoTaxa use: 1:loopnum
     
-    if isdir(tsv) == 0
-        tsvfile = files;
-        filename = files;
-    else
-        tsvfile = files(ifile);  
-        filename = tsvfile.name;
-    end
+    tsvfile = files(ifile);
+    filename = tsvfile.name;
     
     disp('***********************************************************')
     disp(['Currently evaluating: ',filename])
@@ -132,13 +123,9 @@ for ifile = 1:loopnum  %For all samples in the "export" folder from EcoTaxa use:
     if exist([file_loc,'reduced_mat_files/',filename(1:end-4),'.mat'],'file') == 0
         matfilename = read_tsv_file(tsvfile);
     else
-        if isdir(tsv) == 1
-            matfilename = [tsvfile.folder,'/reduced_mat_files/',filename(1:end-4),'.mat'];
-        else
-            matfilename = [file_loc,'reduced_mat_files/',filename(1:end-4),'.mat'];
-        end
+        matfilename = [file_loc,'reduced_mat_files/',filename(1:end-4),'.mat'];
     end
-      
+    
     % Load .mat file of IFCB data and get the relevant variable names
     objects = get_var_names(matfilename);
     
@@ -147,68 +134,67 @@ for ifile = 1:loopnum  %For all samples in the "export" folder from EcoTaxa use:
     for ii = 1:ids_tot
         if strcmp(objects.status(ii,:), "validated") == 1 || strcmp(objects.status(ii,:),'"validated"') == 1
             ids_val(ii) = 1;
-        else 
+        else
             ids_val(ii) = 0;
         end
     end
-
-    % Print the percent validated to the screen 
+    
+    % Print the percent validated to the screen
     disp([num2str(sum(ids_val)),' out of ',num2str(ids_tot),' images validated (',num2str(round(sum(ids_val)/ids_tot*100,1)),'%)'])
     
-    % Find the number of validated objects in each unique category name and print a text file with that info    
+    % Find the number of validated objects in each unique category name and print a text file with that info
     if write_files ~= 0
-        [~,~] = write_group_counts_file(file_loc,matfilename,objects); 
+        [~,~] = write_group_counts_file(file_loc,matfilename,objects);
     end
-       
+    
     % If the sample is from a dilution, multiply the numbers to compare with
     % other per liter data
-    if dilution > 0       
+    if dilution > 0
         dil_amt = 100./dilution;
         
         area_mat = repmat(objects.sumarea,1,dil_amt);
         objects.sumarea = reshape(area_mat,length(area_mat(1,:))*length(area_mat(:,1)),1);
         
         vol_mat = repmat(objects.sumvol,1,dil_amt);
-        objects.sumvol = reshape(vol_mat,length(vol_mat(1,:))*length(vol_mat(:,1)),1);       
+        objects.sumvol = reshape(vol_mat,length(vol_mat(1,:))*length(vol_mat(:,1)),1);
     end
-      
+    
     % Define bin edges if min, max, and number of bins is provided use
     % sizebins structure
-    if isstruct(sizebins) == 1      
+    if isstruct(sizebins) == 1
         X = (sizebins.Dmax/sizebins.Dmin)^(1/sizebins.numbins);
         bins_right_edge = X.^(1:sizebins.numbins)*sizebins.Dmin;
         
-        bin_edges = [sizebins.Dmin,bins_right_edge];       
-    else 
+        bin_edges = [sizebins.Dmin,bins_right_edge];
+    else
         bin_edges = sizebins;
     end
-        
+    
     % Size distribution analysis of all particles
-    bins = bins_by_size(objects,bin_edges,diameter); 
+    bins = bins_by_size(objects,bin_edges,diameter);
     
     % Type and group analysis (adds three new fields to the "bins"
     % structure defined just above)
-    bins = group_by_type(objects,bin_edges,bins);
+    %bins = group_by_type_microlayer(objects,bin_edges,bins);
+    bins = group_by_type_microlayer(objects,bin_edges,bins);
     
     % Add the original .tsv filename and bins edges to the structure of binned data
-   [bins.filename] = deal(filename);
+    [bins.filename] = deal(filename);
     for ii = 1:length(bin_edges)-1
         bins(ii).bin_edges = [bin_edges(ii),bin_edges(ii+1)];
     end
     
     % If more than one .tsv file is being analyzed, create a structure of structures.
-    if loopnum > 1 
+    if loopnum > 1
         bins_size(ifile).bins_file = bins;
-    else 
+    else
         bins_size = bins;
-    end      
+    end
     
-end
-    
-% Write a .mat file to store the data 
-if write_files ~= 0
-    getslash = strfind(file_loc,'/');
-    save([file_loc,'../analysis_mat_files',file_loc(getslash(end-1):end-1),'_PROC.mat'],'bins_size');
 end
 
-    
+% Write a .mat file to store the data
+if write_files ~= 0
+    save([file_loc,'../analysis_mat_files/',filename(1:end-4),'_PROC.mat'],'bins_size')
+end
+
